@@ -1,28 +1,33 @@
-import { useState } from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { Authorized } from './Authorized';
-import { Login } from '../pages/Login.jsx';
-import Home from '../pages/Home';
-import { RockForm } from './RockForm.jsx';
-import { RockList } from './RockList.jsx';
-import { Register } from '../pages/Register.jsx';
+import { useState, useCallback } from 'react'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { Authorized } from './Authorized'
+import { Login } from '../pages/Login.jsx'
+import Home from '../pages/Home'
+import { RockForm } from './RockForm.jsx'
+import { RockList } from './RockList.jsx'
+import { Register } from '../pages/Register.jsx'
 
 export const ApplicationViews = () => {
-    const [rocksState, setRocksState] = useState([]);
+    const [rocksState, setRocksState] = useState([])
 
-    const fetchRocksFromAPI = async () => {
+    const fetchRocksFromAPI = useCallback(async () => {
         try {
+            const token = JSON.parse(localStorage.getItem("rock_token"))?.token
+            if (!token) {
+                console.error('Token not found, redirecting to login')
+                return
+            }
             const response = await fetch("http://localhost:8000/rocks", {
                 headers: {
-                    Authorization: `Token ${JSON.parse(localStorage.getItem("rock_token")).token}`
+                    Authorization: `Token ${token}`
                 }
-            });
-            const rocks = await response.json();
-            setRocksState(rocks);
+            })
+            const rocks = await response.json()
+            setRocksState(rocks)
         } catch (error) {
-            console.error('Error fetching rocks:', error);
+            console.error('Error fetching rocks:', error)
         }
-    };
+    }, [])
 
     return (
         <BrowserRouter>
@@ -37,5 +42,5 @@ export const ApplicationViews = () => {
                 </Route>
             </Routes>
         </BrowserRouter>
-    );
-};
+    )
+}

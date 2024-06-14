@@ -1,9 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 
 export const RockList = ({ rocks, fetchRocks }) => {
-    useEffect(() => {
-        fetchRocks(); // Ensure rocks are fetched when the component mounts
+    const fetchRocksCallback = useCallback(() => {
+        fetchRocks();
     }, [fetchRocks]);
+
+    useEffect(() => {
+        fetchRocksCallback(); // Ensure rocks are fetched when the component mounts
+    }, [fetchRocksCallback]);
 
     const displayRocks = () => {
         if (rocks && rocks.length) {
